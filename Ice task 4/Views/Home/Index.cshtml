@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<!-- Hero Section -->
+<div class="position-relative mb-5">
+    <div class="bg-image rounded shadow-sm" style="height: 400px; background: linear-gradient(rgba(30, 76, 120, 0.7), rgba(30, 76, 120, 0.7)), url('https://source.unsplash.com/AH8zKXqFITA/1600x900') no-repeat center; background-size: cover;">
+        <div class="container h-100 d-flex flex-column justify-content-center text-white">
+            <div class="px-md-5 py-5">
+                <h1 class="display-4 fw-bold mb-3">Welcome to Luxury Haven</h1>
+                <p class="lead mb-4">Experience exceptional comfort, elegance, and world-class service at our prestigious establishment.</p>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <div>
+                        <a class="btn btn-light btn-lg px-4 me-2" asp-controller="Account" asp-action="Register">
+                            <i class="bi bi-person-plus me-2"></i>Join Us
+                        </a>
+                        <a class="btn btn-outline-light btn-lg px-4" asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <a class="btn btn-light btn-lg px-4" asp-controller="Home" asp-action="AvailableRooms">
+                        <i class="bi bi-search me-2"></i>Browse Rooms
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="row mt-5">
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (User.IsInRole("Admin"))
+        {
+            <!-- Admin Dashboard -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 text-center">
+                        <h2 class="card-title mb-4">Administrative Dashboard</h2>
+                        <p class="lead text-muted mb-4">Manage the hotel operations through the following modules:</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-door-open icon-feature"></i>
+                        <h3>Room Management</h3>
+                        <p class="text-muted mb-4">Add, edit, and manage all room inventory in the hotel system.</p>
+                        <a asp-controller="Rooms" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-gear me-2"></i>Manage Rooms
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-people icon-feature"></i>
+                        <h3>Guest Management</h3>
+                        <p class="text-muted mb-4">View and maintain all guest accounts and profiles.</p>
+                        <a asp-controller="Guests" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-person-gear me-2"></i>Manage Guests
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-calendar-check icon-feature"></i>
+                        <h3>Booking Management</h3>
+                        <p class="text-muted mb-4">Create and supervise all hotel reservations in the system.</p>
+                        <a asp-controller="Bookings" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-journal-check me-2"></i>Manage Bookings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- User Dashboard -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-search icon-feature"></i>
+                        <h3>Find Your Perfect Room</h3>
+                        <p class="text-muted mb-4">Browse our selection of luxurious rooms and suites, each designed for your comfort and relaxation.</p>
+                        <a asp-controller="Home" asp-action="AvailableRooms" class="btn btn-primary">
+                            <i class="bi bi-building me-2"></i>View Available Rooms
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-journal-check icon-feature"></i>
+                        <h3>Your Reservations</h3>
+                        <p class="text-muted mb-4">View and manage your current and upcoming stays with us.</p>
+                        <a asp-controller="Bookings" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-calendar-event me-2"></i>My Reservations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- Features Section for Non-Authenticated Users -->
+        <div class="col-12 mb-5">
+            <h2 class="text-center mb-5">Experience Luxury at Every Turn</h2>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-stars icon-feature"></i>
+                    <h3>Premium Accommodations</h3>
+                    <p class="text-muted">Immerse yourself in elegance with our meticulously designed rooms and suites, offering unparalleled comfort and style.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-cup-hot icon-feature"></i>
+                    <h3>Exquisite Dining</h3>
+                    <p class="text-muted">Savor culinary masterpieces prepared by award-winning chefs using the finest ingredients from around the world.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-water icon-feature"></i>
+                    <h3>Wellness & Relaxation</h3>
+                    <p class="text-muted">Rejuvenate your body and mind at our spa and wellness facilities, featuring custom treatments and therapeutic services.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Testimonials/Info Section -->
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="row mt-5 pt-5 border-top">
+        <div class="col-12 mb-4">
+            <h2 class="text-center mb-5">Why Choose Luxury Haven</h2>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-shield-check text-primary fs-2 me-3"></i>
+                        <h4 class="mb-0">Safety & Security</h4>
+                    </div>
+                    <p class="text-muted">Your safety is our priority. Enjoy your stay with complete peace of mind thanks to our comprehensive security measures and trained staff.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt text-primary fs-2 me-3"></i>
+                        <h4 class="mb-0">Prime Location</h4>
+                    </div>
+                    <p class="text-muted">Situated in the heart of the city, our hotel provides easy access to major attractions, shopping districts, and business centers.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-wifi text-primary fs-2 me-3"></i>
+                        <h4 class="mb-0">Modern Amenities</h4>
+                    </div>
+                    <p class="text-muted">Stay connected with high-speed Wi-Fi and enjoy state-of-the-art facilities designed for your convenience and comfort.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-award text-primary fs-2 me-3"></i>
+                        <h4 class="mb-0">Award-Winning Service</h4>
+                    </div>
+                    <p class="text-muted">Experience hospitality at its finest with our dedicated team committed to exceeding your expectations at every interaction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card text-center bg-primary text-white shadow p-5 rounded border-0">
+                <h2 class="mb-3">Ready to Experience Luxury?</h2>
+                <p class="lead mb-4">Create an account today and start planning your perfect getaway.</p>
+                <div class="d-flex justify-content-center">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg me-2">
+                        <i class="bi bi-person-plus me-2"></i>Sign Up Now
+                    </a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
