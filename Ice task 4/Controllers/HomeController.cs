@@ -191,7 +191,7 @@ namespace Ice_task_4.Controllers
                         await transaction.CommitAsync();
 
                         TempData["SuccessMessage"] = $"Your booking was successful! Room {room.RoomNumber} is reserved for {model.CheckInDate:MMM dd, yyyy} to {model.CheckOutDate:MMM dd, yyyy}.";
-                        return RedirectToAction("DiagnoseBookings", "Home");
+                        return RedirectToAction("Index", "Bookings");
                     }
                     catch (Exception ex)
                     {
@@ -206,107 +206,6 @@ namespace Ice_task_4.Controllers
 
             // If we got here, something failed, redisplay form
             return View(model);
-        }
-
-        // Diagnostics Action
-        [Authorize]
-        public async Task<IActionResult> DiagnoseBookings()
-        {
-            var userEmail = User.Identity.Name;
-
-            var guests = await _context.Guests.ToListAsync();
-            var bookings = await _context.Bookings.ToListAsync();
-
-            string diagnosticInfo = $"Total guests in system: {guests.Count}\n";
-            diagnosticInfo += $"Total bookings in system: {bookings.Count}\n\n";
-
-            diagnosticInfo += "All Guests:\n";
-            foreach (var guest in guests)
-            {
-                diagnosticInfo += $"Guest ID: {guest.GuestId}, Name: {guest.FirstName} {guest.LastName}, Email: {guest.Email}\n";
-            }
-
-            diagnosticInfo += "\nAll Bookings:\n";
-            foreach (var booking in bookings)
-            {
-                diagnosticInfo += $"Booking ID: {booking.BookingId}, Room ID: {booking.RoomId}, Guest ID: {booking.GuestId}, Check-in: {booking.CheckInDate:yyyy-MM-dd}, Check-out: {booking.CheckOutDate:yyyy-MM-dd}\n";
-            }
-
-            // Find current user's guest record
-            var currentGuest = guests.FirstOrDefault(g => g.Email == userEmail);
-            if (currentGuest != null)
-            {
-                diagnosticInfo += $"\nCurrent User's Guest Record:\n";
-                diagnosticInfo += $"Guest ID: {currentGuest.GuestId}, Name: {currentGuest.FirstName} {currentGuest.LastName}, Email: {currentGuest.Email}\n";
-
-                // Find bookings with this guest ID
-                var userBookings = bookings.Where(b => b.GuestId == currentGuest.GuestId).ToList();
-                diagnosticInfo += $"\nBookings for current user (Count: {userBookings.Count}):\n";
-                foreach (var booking in userBookings)
-                {
-                    diagnosticInfo += $"Booking ID: {booking.BookingId}, Room ID: {booking.RoomId}, Check-in: {booking.CheckInDate:yyyy-MM-dd}, Check-out: {booking.CheckOutDate:yyyy-MM-dd}\n";
-                }
-            }
-            else
-            {
-                diagnosticInfo += $"\nNo guest record found for current user ({userEmail})";
-            }
-
-            ViewBag.DiagnosticInfo = diagnosticInfo;
-            return View();
-        }
-
-        // Test Booking Creation
-        [Authorize]
-        public async Task<IActionResult> CreateTestBooking()
-        {
-            try
-            {
-                // 1. Get a room that's available
-                var room = await _context.Rooms.FirstOrDefaultAsync(r => r.IsAvailable);
-                if (room == null)
-                {
-                    TempData["ErrorMessage"] = "No available rooms to book.";
-                    return RedirectToAction("DiagnoseBookings");
-                }
-
-                // 2. Get current user's guest record
-                var userEmail = User.Identity.Name;
-                var guest = await _context.Guests.FirstOrDefaultAsync(g => g.Email == userEmail);
-                if (guest == null)
-                {
-                    TempData["ErrorMessage"] = "No guest record found for current user.";
-                    return RedirectToAction("DiagnoseBookings");
-                }
-
-                // 3. Create a simple booking directly
-                var booking = new Booking
-                {
-                    RoomId = room.RoomId,
-                    GuestId = guest.GuestId,
-                    CheckInDate = DateTime.Now.AddDays(1),
-                    CheckOutDate = DateTime.Now.AddDays(3),
-                    TotalPrice = room.PricePerNight * 2,
-                    IsCancelled = false
-                };
-
-                // 4. Add and save
-                _context.Bookings.Add(booking);
-                await _context.SaveChangesAsync();
-
-                // 5. Update room availability
-                room.IsAvailable = false;
-                _context.Update(room);
-                await _context.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = $"Test booking created! ID: {booking.BookingId}";
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error creating test booking: {ex.Message}";
-            }
-
-            return RedirectToAction("DiagnoseBookings");
         }
     }
 }
