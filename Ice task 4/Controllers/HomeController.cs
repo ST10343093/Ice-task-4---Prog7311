@@ -182,7 +182,7 @@ namespace Ice_task_4.Controllers
                         _context.Bookings.Add(booking);
                         await _context.SaveChangesAsync();
 
-                        // 6. Update room availability
+                        // 6. Update rooms availability
                         room.IsAvailable = false;
                         _context.Update(room);
                         await _context.SaveChangesAsync();
